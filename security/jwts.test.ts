@@ -1,4 +1,4 @@
-import { JWTPayload } from "lib/lib/types";
+import { JWTPayload } from "library/lib/types";
 import { describe, expect, it } from "vitest";
 import { createJWT, verifyJWT, getJWTFromCookie } from "./jwts";
 

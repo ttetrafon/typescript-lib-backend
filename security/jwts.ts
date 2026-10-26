@@ -1,4 +1,4 @@
-import { JWTPayload } from "lib/lib/types";
+import { JWTPayload } from "library/lib/types";
 import { JWT_DURATION_S, JWT_COOKIE_NAME } from "../constants";
 import { strToBase64url, bytesToBase64url, base64urlToStr } from "./conversions";
 import { signToken } from "./sessions";

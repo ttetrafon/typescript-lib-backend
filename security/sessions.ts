@@ -1,4 +1,4 @@
-import { SessionData } from "lib/lib/types";
+import { SessionData } from "library/lib/types";
 import { SESSION_DURATION_MS, SESSION_PREFIX } from "../constants";
 
 /**
