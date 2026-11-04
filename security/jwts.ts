@@ -1,6 +1,6 @@
-import { JWTPayload } from "library/lib/types";
+import { JWTPayload } from "library/lib/types/authentication";
 import { JWT_DURATION_S, JWT_COOKIE_NAME } from "../constants";
-import { strToBase64url, bytesToBase64url, base64urlToStr } from "./conversions";
+import { strToBase64, bytesToBase64, base64urlToStr } from "./conversions";
 import { signToken } from "./sessions";
 
 /**
@@ -8,17 +8,18 @@ import { signToken } from "./sessions";
  */
 export async function createJWT<T extends JWTPayload>(
   payload: Omit<T, 'iat' | 'exp'>,
-  secret: string
+  secret: string,
+  ttlSeconds: number = JWT_DURATION_S
 ): Promise<string> {
-  const header = strToBase64url(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
+  const header = strToBase64(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
   const now = Math.floor(Date.now() / 1000);
-  const body = strToBase64url(
-    JSON.stringify({ ...payload, iat: now, exp: now + JWT_DURATION_S })
+  const body = strToBase64(
+    JSON.stringify({ ...payload, iat: now, exp: now + ttlSeconds })
   );
   const data = `${header}.${body}`;
   const sigHex = await signToken(data, secret);
   const sigBytes = new Uint8Array(sigHex.match(/.{2}/g)!.map((b) => parseInt(b, 16)));
-  return `${data}.${bytesToBase64url(sigBytes)}`;
+  return `${data}.${bytesToBase64(sigBytes)}`;
 }
 
 /**
@@ -34,7 +35,7 @@ export async function verifyJWT<T extends JWTPayload>(token: string, secret: str
 
   const expectedHex = await signToken(data, secret);
   const expectedBytes = new Uint8Array(expectedHex.match(/.{2}/g)!.map((b) => parseInt(b, 16)));
-  const expectedSig = bytesToBase64url(expectedBytes);
+  const expectedSig = bytesToBase64(expectedBytes);
 
   // Constant-time comparison
   if (!sig || !body) return null;

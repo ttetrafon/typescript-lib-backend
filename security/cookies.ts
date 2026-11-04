@@ -1,5 +1,5 @@
-import { JWTPayload } from "library/lib/types";
-import { SESSION_COOKIE_NAME, SESSION_DURATION_MS } from "../constants";
+import { JWTPayload } from "library/lib/types/authentication";
+import { ABSOLUTE_TTL_MS, REFRESH_COOKIE_NAME, SESSION_COOKIE_NAME, SESSION_DURATION_MS } from "../constants";
 import { base64urlToStr } from "./conversions";
 
 /**
@@ -59,4 +59,29 @@ export function getPayloadFromCookie<T extends JWTPayload>(cookieHeader: string 
   } catch {
     return null;
   }
+}
+
+/**
+ * Set-Cookie value for the refresh token (web clients).
+ * Scoped to the refresh endpoint so it is never sent with ordinary API calls.
+ */
+export function createRefreshCookie(token: string, path: string, secure: boolean = true): string {
+  const parts = [
+    `${REFRESH_COOKIE_NAME}=${token}`,
+    `Max-Age=${Math.floor(ABSOLUTE_TTL_MS / 1000)}`,
+    `Path=${path}`,
+    'HttpOnly',
+    'SameSite=Strict',
+  ];
+  if (secure) {
+    parts.push('Secure');
+  }
+  return parts.join('; ');
+}
+
+/**
+ * Set-Cookie value that clears the refresh token cookie
+ */
+export function clearRefreshCookie(path: string): string {
+  return `${REFRESH_COOKIE_NAME}=; Max-Age=0; Path=${path}; HttpOnly; SameSite=Strict`;
 }

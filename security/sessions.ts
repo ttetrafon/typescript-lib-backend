@@ -1,4 +1,4 @@
-import { SessionData } from "library/lib/types";
+import { SessionInfo } from "library/lib/types/authentication";
 import { SESSION_DURATION_MS, SESSION_PREFIX } from "../constants";
 
 /**
@@ -71,47 +71,47 @@ export async function createSession(setSessionSecretCb: Function, secret: string
 /**
  * Verify a session token and return session data if valid
  */
-export async function verifySession(
-  token: string,
-  getSessionDataCb: Function | null,
-  secret: string
-): Promise<SessionData | null> {
-  console.log(`---> verifySession(token=${token}, secret=${secret})`);
-  const parts = token.split('.');
-  console.log("... parts:", parts);
-  if (parts.length !== 3) return null;
+// export async function verifySession(
+//   token: string,
+//   getSessionDataCb: Function | null,
+//   secret: string
+// ): Promise<SessionInfo | null> {
+//   console.log(`---> verifySession(token=${token}, secret=${secret})`);
+//   const parts = token.split('.');
+//   console.log("... parts:", parts);
+//   if (parts.length !== 3) return null;
 
-  const [sessionId, expiresAtStr, signature] = parts;
-  if (!sessionId || !expiresAtStr || !signature) return null;
+//   const [sessionId, expiresAtStr, signature] = parts;
+//   if (!sessionId || !expiresAtStr || !signature) return null;
 
-  const data = `${sessionId}.${expiresAtStr}`;
-  console.log("... data:", data);
+//   const data = `${sessionId}.${expiresAtStr}`;
+//   console.log("... data:", data);
 
-  // Verify signature
-  const isValid = await verifySignature(data, signature, secret);
-  console.log("... isValid:", isValid);
-  if (!isValid) return null;
+//   // Verify signature
+//   const isValid = await verifySignature(data, signature, secret);
+//   console.log("... isValid:", isValid);
+//   if (!isValid) return null;
 
-  // Check expiration
-  const expiresAt = parseInt(expiresAtStr, 10);
-  if (isNaN(expiresAt) || Date.now() > expiresAt) return null;
+//   // Check expiration
+//   const expiresAt = parseInt(expiresAtStr, 10);
+//   if (isNaN(expiresAt) || Date.now() > expiresAt) return null;
 
-  // Check if session is not revoked
-  if (getSessionDataCb != null) {
-    const sessionData = await getSessionDataCb(`${SESSION_PREFIX}${sessionId}`);
-    // const sessionData = await kv.get(`${SESSION_PREFIX}${sessionId}`);
-    if (!sessionData) return null;
-  }
+//   // Check if session is not revoked
+//   if (getSessionDataCb != null) {
+//     const sessionData = await getSessionDataCb(`${SESSION_PREFIX}${sessionId}`);
+//     // const sessionData = await kv.get(`${SESSION_PREFIX}${sessionId}`);
+//     if (!sessionData) return null;
+//   }
 
-  return { sessionId, expiresAt };
-}
+//   return { sessionId, expiresAt };
+// }
 
 /**
  * Invalidate a session (logout)
  */
-export async function invalidateSession(token: string, secret: string, getSessionDataCb: Function, deleteSessionCb: Function): Promise<void> {
-  const session = await verifySession(token, getSessionDataCb, secret);
-  if (session) {
-    await deleteSessionCb(`${SESSION_PREFIX}${session.sessionId}`);
-  }
-}
+// export async function invalidateSession(token: string, secret: string, getSessionDataCb: Function, deleteSessionCb: Function): Promise<void> {
+//   const session = await verifySession(token, getSessionDataCb, secret);
+//   if (session) {
+//     await deleteSessionCb(`${SESSION_PREFIX}${session.sessionId}`);
+//   }
+// }

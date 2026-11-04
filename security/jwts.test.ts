@@ -1,4 +1,4 @@
-import { JWTPayload } from "library/lib/types";
+import { JWTPayload } from "library/lib/types/authentication";
 import { describe, expect, it } from "vitest";
 import { createJWT, verifyJWT, getJWTFromCookie } from "./jwts";
 
@@ -7,6 +7,8 @@ describe('JWT Utilities', () => {
   const payload: JWTPayload = {
     sub: 125,
     username: 'test-user',
+    sid: 'test-sid',
+    cnf: { jkt: 'test-jkt' },
     iat: 0,
     exp: 0
   };
