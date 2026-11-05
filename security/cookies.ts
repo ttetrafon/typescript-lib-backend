@@ -65,14 +65,16 @@ export function getPayloadFromCookie<T extends JWTPayload>(cookieHeader: string 
  * Set-Cookie value for the refresh token (web clients).
  * Scoped to the refresh endpoint so it is never sent with ordinary API calls.
  */
-export function createRefreshCookie(token: string, path: string, secure: boolean = true): string {
+export function createRefreshCookie(token: string, path: string, strict: boolean = true, secure: boolean = true): string {
   const parts = [
     `${REFRESH_COOKIE_NAME}=${token}`,
     `Max-Age=${Math.floor(ABSOLUTE_TTL_MS / 1000)}`,
     `Path=${path}`,
     'HttpOnly',
-    'SameSite=Strict',
   ];
+  if (strict) {
+    parts.push('SameSite=Strict');
+  }
   if (secure) {
     parts.push('Secure');
   }
