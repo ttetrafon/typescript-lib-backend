@@ -1,6 +1,7 @@
 export const ABSOLUTE_TTL_MS = 90 * 24 * 60 * 60 * 1000; // 90 days; measured from login
 export const ACCESS_TOKEN_TTL_S = 10 * 60; // 10 minutes
 export const DPOP_IAT_TOLERANCE_S = 60; // accepted clock skew for a DPoP proof's iat, in either direction
+export const DPOP_NONCE_TTL_S = 60; // a server-issued DPoP nonce is accepted this long; bounds how long pre-signed proofs stay usable
 export const IDLE_TTL_MS = 14 * 24 * 60 * 60 * 1000; // 14 days; measured from the last refresh
 export const JTI_WINDOW_MS = 120 * 1000; // must be >= the accepted DPoP iat window (both directions)
 export const JWT_COOKIE_NAME = 'token';

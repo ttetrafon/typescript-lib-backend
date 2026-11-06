@@ -7,6 +7,8 @@ export type DpopProof = {
   jkt: string;
   /** Unique id of the proof; feed it to the session's replay check on sensitive endpoints */
   jti: string;
+  /** The `nonce` claim, if present. Check it with `verifyDpopNonce` on endpoints that require server nonces. */
+  nonce?: string;
 };
 
 /** Parses `Authorization: DPoP <token>`. A DPoP-bound token is never accepted under the Bearer scheme. */
@@ -56,7 +58,8 @@ export async function verifyDpopProof(
 
     if (accessToken !== undefined && payload.ath !== await sha256(accessToken)) return null;
 
-    return { jkt: await calculateJwkThumbprint(jwk), jti: payload.jti };
+    const nonce = typeof payload.nonce === "string" ? payload.nonce : undefined;
+    return { jkt: await calculateJwkThumbprint(jwk), jti: payload.jti, nonce };
   } catch {
     // malformed proof, bad signature, unsupported key, etc.
     return null;
