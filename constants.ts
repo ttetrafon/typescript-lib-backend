@@ -13,3 +13,5 @@ export const REFRESH_GRACE_MS = 15 * 1000; // the previous refresh token stays u
 export const SESSION_COOKIE_NAME = 'token';
 export const SESSION_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
 export const SESSION_PREFIX = 'session:';
+export const TRACER = 'tracer';
+export const TRACER_HEADER = 'X-Request-Id';
